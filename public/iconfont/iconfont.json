@@ -1,0 +1,65 @@
+{
+  "id": "2447533",
+  "name": "习标格pc",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "18371996",
+      "name": "视频，电视",
+      "font_class": "shipindianshi",
+      "unicode": "e6ca",
+      "unicode_decimal": 59082
+    },
+    {
+      "icon_id": "15282888",
+      "name": "文件夹",
+      "font_class": "wenjianjia",
+      "unicode": "e6f0",
+      "unicode_decimal": 59120
+    },
+    {
+      "icon_id": "604486",
+      "name": "地址",
+      "font_class": "dizhi",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "705044",
+      "name": "wifi",
+      "font_class": "wifi",
+      "unicode": "eb98",
+      "unicode_decimal": 60312
+    },
+    {
+      "icon_id": "1511902",
+      "name": "电话",
+      "font_class": "phone-channel",
+      "unicode": "e686",
+      "unicode_decimal": 59014
+    },
+    {
+      "icon_id": "4361001",
+      "name": "邮箱",
+      "font_class": "youxiang",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "16108969",
+      "name": "购物车",
+      "font_class": "gouwuche",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "967624",
+      "name": "圈",
+      "font_class": "circle",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    }
+  ]
+}

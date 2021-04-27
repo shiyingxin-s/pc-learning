@@ -1,0 +1,40 @@
+/** @format */
+
+@import "utils";
+
+ $con_bg: '../../assets/home/con_bg.png';
+ $pic_banner:"../../assets/home/pic_banner.png";
+
+._home{
+  .bgImg{
+    display: block;
+    background-size:100% 100%;
+    background-repeat: no-repeat;
+  }
+  .banner{
+    background: url($pic_banner) ;
+    @include wh(100%, 680px);
+    margin-bottom: 90px;
+  }
+  .titleImg{
+    text-align: center;
+  }
+  .contentImg{
+    background: url($con_bg);
+    @include wh(100%, 661px);
+    line-height: 661px;
+  }
+  .cImg,.c2Img{
+    text-align: center;
+  }
+  .c2Img{
+    display:flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    .cImgItem{
+      padding: 0 17px;
+    }
+  }
+
+}

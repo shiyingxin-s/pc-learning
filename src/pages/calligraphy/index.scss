@@ -1,0 +1,199 @@
+/** @format */
+
+@import "utils";
+$cbg:"../../assets/calligraphy/cbg.png";
+$wbg:"../../assets/calligraphy/font_bg.jpg";
+
+._content{
+ 
+  .top_box{
+    margin-top: 66px;
+    display: -webkit-flex; /* Safari */
+    -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+    display: flex;
+    flex-wrap: wrap;
+    .tItem {
+      cursor: pointer;
+      -ms-flex: 0 0 50%;
+      -webkit-box-flex: 0;
+      flex: 0 0 50%;
+      max-width: 50%;
+      text-align: center;
+      .title{
+        margin-top: 10px;
+        font-family: 'fontStyle' !important;
+        font-size: 26px;
+        font-weight: 400;
+        line-height: 60px;
+        color: #4D453D;
+      }
+    }
+    .tab_box {
+      margin: 0 auto;
+    }
+    .active {
+      background: url($cbg) ;
+      @include wh(480px, 316px);
+      background-repeat: no-repeat;
+    }
+  }
+  .con_box{
+    margin-top: 10px;
+    .con_top{
+      background-color: #2d2b2b;
+      height: 60px;
+      line-height: 60px;
+      .title_con{
+        position: relative;
+        color: #FFFDFC;
+        font-size: 16px;
+        font-weight: 200;
+        .arrow{
+          top:-7px;
+          position: absolute;
+          display: block;
+          width: 14px;
+          height: 14px;
+          background: #2d2b2b;
+          transform: rotate(45deg);
+        }
+        .left{
+          left:25%
+        }
+        .right{
+          right: 25%;
+        }
+      }
+    }
+    .con_section{
+      padding:  23px 0;
+      margin-bottom: 4px;
+      background-color: #363636;
+      .ctitle{
+        font-family: 'fontStyle' !important;
+        font-size: 26px;
+        font-weight: 200;
+        color: #FFFDFC;
+      }
+      .course_top{
+        margin-top: 15px;
+        -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+        display: flex;
+        flex-wrap: wrap;
+        height: 437px;
+      }
+      .c_item1{
+        -ms-flex: 0 0 70%;
+        -webkit-box-flex: 0;
+        flex: 0 0 70%;
+        max-width: 70%;
+      }
+      .c_item2{
+        -ms-flex: 0 0 30%;
+        -webkit-box-flex: 0;
+        flex: 0 0 30%;
+        max-width: 30%;
+        background: #2D2B2B;
+        overflow-y: auto;
+        .c_top{
+          padding: 15px 15px 0;
+        }
+        .c_title{
+          font-size: 14px;
+          font-weight: 400;
+          color: #FFFDFC;
+          line-height: 32px;
+          padding-left: 15px;
+        }
+        .calligraphy_c_tabs{
+        }
+      }
+      .words{
+        margin-top: 16px;
+        .w_item{
+          display: inline-block;
+          background:url($wbg) ;
+          background-repeat: no-repeat;
+          background-size: 100% 100%;
+          @include wh(126px, 126px);
+          margin: 15px 10px;
+          color: #000000;
+          font-size: 80px;
+          line-height: 126px;
+          text-align: center;
+        }
+        .active{
+          color: #FFBF25;
+        }
+      }
+      .font_structure{
+        margin-top: 30px;
+        -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+        display: flex;
+        flex-wrap: wrap;
+        .s_item{
+          flex: 0 0 50%;
+          -ms-flex: 0 0 50%;
+          -webkit-box-flex: 0;
+          max-width: 50%;
+        }
+        .font_btn span{
+          color: #363535;
+          width: 66px;
+          height: 19px;
+          background-color: #FFBF25;
+          font-size: 12px;
+          padding: 2px 5px;
+          display: block;
+          line-height: 16px;
+          text-align: center;
+        }
+        .structure{
+          .st_item{
+            display: inline-block;
+            margin: 30px;
+            p{
+              color: #ffffff;
+              font-size: 12px;
+            }
+            span{
+              color: #FFBF25;
+              font-size: 16px;
+            }
+          }
+        }
+        .phrase{
+          padding: 10px 0;
+          .ph_item{
+            color: #FFBF25;
+            font-size: 16px;
+            display: inline-block;
+            margin: 20px;
+          }
+        }
+      }
+      .font_img{
+        margin: 10px 0;
+        text-align: center;
+      }
+    }
+  }
+}
+.modalTitle{
+  font-size: 18px;
+  margin: 20px 0 30px;
+  color: #3C3838;
+  text-align: center;
+}
+.wxCodeImg{
+  margin: 0 auto 40px;
+  text-align: center;
+  width: 200px;
+  height: 200px;
+  img{
+    width: 100%;
+    height: 100%;
+  }
+}
+
+

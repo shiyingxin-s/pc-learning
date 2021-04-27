@@ -1,0 +1,103 @@
+/** @format */
+
+@import "utils";
+
+$logoPath: "../../assets/topbar.png";
+$lvBackground: "../../assets/mylevel.png";
+$bgPath: "../../assets/xuebi.png";
+$btnActive: "../../assets/home/btn_active.png";
+
+.noHomeStyle{
+  box-shadow: 0px 0px 21px 0px rgba(93, 93, 93, 0.3);
+}
+header,
+._header {
+  position: relative;
+  z-index: 444;
+  height: 147px;
+  width: 100%;
+  background-color: var(--header-bgcolor);
+  display: flex;
+  flex-wrap: nowrap;
+  padding: 15px 0 20px;
+  .logo {
+    margin-right: 130px;
+    min-width: 174px;
+    margin-left: 157px;
+    line-height: 92px;
+    img {
+      height: 58px;
+    }
+  }
+  .container{
+    width: 100%;
+    height: 147px;
+    div[class='ant-affix'] {
+      padding: 15px 0 20px;
+      background: var(--header-bgcolor) !important;
+      box-shadow: 0px 0px 21px 0px rgba(93, 93, 93, 0.3);
+    }
+  }
+  .menuList{
+    flex-grow: initial;
+    display: flex;
+    .btnActive{
+      background: url($btnActive) no-repeat;
+      background-size: 82px 83px;
+      width: 90px;
+      height: 100px;
+      display: block;
+      background-position: 100% 6px; 
+    }
+    .menuItem{
+      @include wh(120px, 120px);
+      line-height: 120px;
+    }
+  }
+
+  .routerBtn {
+    flex-basis: 100px;
+  }
+  .skin {
+    width: 200px;
+    font-size: 18px;
+  }
+  .name {
+    margin-left: 8px;
+    font-size: 12px;
+    font: inherit;
+  }
+  .search {
+    flex: 1;
+    .inputSearch {
+      width: 500px;
+    }
+  }
+  .user {
+    cursor: pointer;
+    line-height: 92px;
+    font-family: 'fontStyle';
+    color: #4D453D;
+    margin-left: 15%;
+    margin-right: 20%;
+  }
+
+  .down {
+    color: var(--header-font-color);
+    // font-size: 20px;
+    margin-top: 7px;
+  }
+}
+
+// :global {
+//   ._userPop {
+//     .ant-popover-inner-content {
+//       padding: 0;
+//     }
+//   }
+//   ._searchPop {
+//     .ant-popover-inner-content {
+//       padding: 0;
+//     }
+//   }
+// }
