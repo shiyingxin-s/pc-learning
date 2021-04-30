@@ -33,7 +33,7 @@ export const request: RequestConfig = {
   timeout: 100000, // 部分接口响应偏慢
   errorHandler,
   headers: {
-    'Content-Type': 'multipart/form-data',
+    'Content-Type': 'application/json;charset=UTF-8',
   },
   requestInterceptors: [
     (url, options: any) => {

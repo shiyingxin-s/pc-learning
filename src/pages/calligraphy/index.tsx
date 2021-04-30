@@ -1,7 +1,7 @@
 /** @format */
 
 import React, {useState} from "react"
-import { Avatar,Tabs,List,Modal } from 'antd'
+import { Avatar,Tabs,List } from 'antd'
 import styles from "./index.scss"
 import classnames from "classnames"
 import gradeSchool from '../../assets/calligraphy/gradeSchool.png'
@@ -11,23 +11,12 @@ import p_avatar from '../../assets/calligraphy/p_avatar.png'
 import { Player, BigPlayButton } from "video-react"
 import {useBoolean} from "ahooks"
 import BuyModalBox from "@/components/BuyModalBox"
+import API from "@/api"
+import {useRequest} from "ahooks"
 
 const CalligraphyPage = () => {
   const { TabPane } = Tabs;
-  const data =[
-    {id: 1, text: '一年级'},
-    {id: 2, text: '二年级'},
-    {id: 3, text: '三年级'},
-    {id: 4, text: '四年级'},
-    {id: 5, text: '五年级'},
-    {id: 6, text: '六年级'},
-    {id: 7, text: '七年级'},
-    {id: 8, text: '八年级'},
-    {id: 9, text: '九年级'},
-    {id: 10, text: '十年级'},
-    {id: 11, text: '十一年级'},
-    {id: 12, text: '十二年级'}
-  ]
+
   const data2 =[
     {id: 1, text: '课时1', buy: 0 },
     {id: 2, text: '课时2', buy: 0 },
@@ -46,7 +35,26 @@ const CalligraphyPage = () => {
   // gSchool-小学， pSchool-通用
   const [typeKey, setKey] = useState('gSchool')
 
-  const [clickVal, setClickVal] = useState({id:1,text:typeKey==='pSchool' ? '' :data[0].text})
+  const {data, loadingMore} = useRequest(
+    (d) => API.getCalligraphyList(
+      {
+        page:'1',
+        versionType: typeKey === 'gSchool'?'1':'0',
+        limit:'10'
+      }),
+    {
+      loadMore: true,
+      isNoMore: (d: any) => !d.hasMore,
+      formatResult: (response) => {
+        return {
+          list: response.code === 0 ? response.page.list : [],
+          total: 100,
+          hasMore: response.code === 0 ? response.more : false
+        }
+      }
+    }
+  )
+  const [clickVal, setClickVal] = useState({id:data.list.length ?data.list[0].gradeno: 0,text:typeKey==='pSchool' ? '' :data.list.length ? data.list[0].gradename:''})
   const [c_clickVal, setC_ClickVal] = useState({id:1,text:typeKey==='pSchool' ?data2[0].text :''})
 
   const [buyVisible,{toggle: buyEvent}] = useBoolean(false)
@@ -103,11 +111,11 @@ const CalligraphyPage = () => {
                         <List
                           size="large"
                           split={false}
-                          dataSource={data}
-                          renderItem={item => <List.Item className={classnames(item.id === clickVal.id ?'active':'')}
+                          dataSource={data.list}
+                          renderItem={item => <List.Item className={classnames(item.gradeno === clickVal.gradeno ?'active':'')}
                             onClick={()=>setClickVal(item)}>
                             <i className={classnames("iconfont",'iconwenjianjia')} />
-                            {item.text}
+                            {item.gradename}
                           </List.Item>}
                         />
                       </div>
