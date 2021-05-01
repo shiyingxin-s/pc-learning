@@ -6,6 +6,11 @@ export enum FetchUrl {
    */
   calligraphyList = '/grade/list',
 
+  /**
+   *  获取课程列表
+   */
+ courseList ='/course/list'
+
 }
 
 enum Banner {

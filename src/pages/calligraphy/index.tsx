@@ -1,6 +1,6 @@
 /** @format */
 
-import React, {useState, useRef} from "react"
+import React, {useState, useRef, useEffect} from "react"
 import { Avatar,Tabs,List,Button } from 'antd'
 import styles from "./index.scss"
 import classnames from "classnames"
@@ -13,30 +13,34 @@ import {useBoolean} from "ahooks"
 import BuyModalBox from "@/components/BuyModalBox"
 import API from "@/api"
 import {useRequest} from "ahooks"
+import { act } from 'react-test-renderer'
 
 const CalligraphyPage = () => {
   const { TabPane } = Tabs;
 
 
-  const data2 =[
-    {id: 1, text: '课时1', buy: 0 },
-    {id: 2, text: '课时2', buy: 0 },
-    {id: 3, text: '课时3', buy: 0 },
-    {id: 4, text: '课时4', buy: 0 },
-    {id: 5, text: '课时5', buy:1 },
-    {id: 6, text: '课时6', buy:1 },
-    {id: 7, text: '课时7', buy:1 },
-    {id: 8, text: '课时8', buy:1 },
-    {id: 9, text: '课时9', buy:1 },
-    {id: 10, text: '课时10', buy:1 },
-    {id: 11, text: '课时11', buy:1 },
-    {id: 12, text: '课时12', buy:1 }
-  ]
+  // const data2 =[
+  //   {id: 1, text: '课时1', buy: 0 },
+  //   {id: 2, text: '课时2', buy: 0 },
+  //   {id: 3, text: '课时3', buy: 0 },
+  //   {id: 4, text: '课时4', buy: 0 },
+  //   {id: 5, text: '课时5', buy:1 },
+  //   {id: 6, text: '课时6', buy:1 },
+  //   {id: 7, text: '课时7', buy:1 },
+  //   {id: 8, text: '课时8', buy:1 },
+  //   {id: 9, text: '课时9', buy:1 },
+  //   {id: 10, text: '课时10', buy:1 },
+  //   {id: 11, text: '课时11', buy:1 },
+  //   {id: 12, text: '课时12', buy:1 }
+  // ]
 
   // gSchool-小学， pSchool-通用
   const [typeKey, setKey] = useState('gSchool')
+  const [clickVal, setClickVal] = useState({gradeno: 0, gradename:''})
+  const [c_clickVal, setC_ClickVal] = useState({courseno:0,coursename:''})
+
   const containerRef = useRef<HTMLDivElement>(null);
-  const {data, loading, loadingMore,noMore,loadMore} = useRequest(
+  const firstRequest = useRequest(
     (d) => API.getCalligraphyList(
       {
         page: (d?.currPage +1 || 1)+ '',
@@ -47,32 +51,74 @@ const CalligraphyPage = () => {
       loadMore: true,
       isNoMore: d => (d ? d.list.length >= d.total : false),
       formatResult: (response) => {
+        const resData = response.code === 0  ? response.page :''
+        if(!clickVal.gradeno){
+          setClickVal({
+            gradeno: resData.list[0].gradeno,
+            gradename: resData.list[0].gradename
+          })
+        }
         return {
-          list: response.code === 0 ? response.page.list : [],
-          total: response.page.totalCount,
-          currPage: response.page.currPage,
-          hasMore: response.code === 0 ? response.page.totalCount < response.page.currPage: false
+          list: resData ? resData.list : [],
+          total: resData ? resData.totalCount :0,
+          currPage: resData ? resData.currPage : 0,
+          hasMore: resData ? resData.totalCount < resData.currPage: false,
         }
       }
     }
   )
   const renderFooter = () => (
     <>
-      {!noMore && (
-       <span style={{textAlign:'center',display: "block", color:"#FFBF25"}} onClick={loadMore}  className={classnames('')}>
-          {loadingMore ? '加载中....' : '点击加载更多'}
+      {!firstRequest.noMore && (
+       <span style={{textAlign:'center',display: "block", color:"#FFBF25"}} onClick={firstRequest.loadMore}  className={classnames('')}>
+          {firstRequest.loadingMore ? '加载中....' : '点击加载更多'}
         </span>
       )}
-      {noMore && <span style={{textAlign:'center',display: "block", color:"#FFBF25"}}>没有更多数据了</span>}
+      {firstRequest.noMore && <span style={{textAlign:'center',display: "block", color:"#FFBF25"}}>没有更多数据了</span>}
     </>
   );
-  const [clickVal, setClickVal] = useState({id:data.list.length ?data.list[0].gradeno: 0,text:typeKey==='pSchool' ? '' :data.list.length ? data.list[0].gradename:''})
-  const [c_clickVal, setC_ClickVal] = useState({id:1,text:typeKey==='pSchool' ?data2[0].text :''})
 
   const [buyVisible,{toggle: buyEvent}] = useBoolean(false)
   const buyShow = () => {
     buyEvent()
   }
+  const secondRequest = useRequest(
+    (d) => API.getCourseList(
+      {
+        page: (d?.currPage +1 || 1)+ '',
+        gradeNo: clickVal.gradeno + '',
+        limit:'10',
+      }),
+    {
+      loadMore: true,
+      isNoMore: d => (d ? d.list.length >= d.total : false),
+      formatResult: (response) => {
+        const resData = response.code === 0  ? response.page :''
+        if(!c_clickVal.courseno){
+          setC_ClickVal({
+            courseno: resData.list[0].courseno,
+            coursename: resData.list[0].coursename
+          })
+        }
+        return {
+          list: resData ? resData.list : [],
+          total: resData ? resData.totalCount :0,
+          currPage: resData ? resData.currPage : 0,
+          hasMore: resData ? resData.totalCount < resData.currPage: false,
+        }
+      }
+    }
+  )
+  const renderFooter2 =() =>(
+    <>
+      {!secondRequest.noMore && (
+        <span style={{textAlign:'center',display: "block", color:"#FFBF25",float:"unset"}} onClick={secondRequest.loadMore}>
+          {secondRequest.loadingMore ? '加载中....' : '点击加载更多'}
+        </span>
+      )}
+      {secondRequest.noMore && <span style={{textAlign:'center',display: "block", color:"#FFBF25", float:"unset"}}>没有更多数据了</span>}
+    </>
+  );
 
   return (
     <div className={classnames(styles._content)}>
@@ -116,17 +162,18 @@ const CalligraphyPage = () => {
                   <span className={styles.c_title}>{typeKey === 'gSchool'? '小学同步教学':'成人版通用教学'}</span>
                 </div>
                 <div className={classnames("calligraphy_c_tabs")} >
-                  <Tabs defaultActiveKey="1" centered>
+                  <Tabs defaultActiveKey="1" centered  onChange={()=>{secondRequest.run}}>
                     {typeKey === 'gSchool'?
                     <TabPane tab="年级" key="1">
                       <div className={classnames('gList')} ref={containerRef} style={{ height: 311, overflowY: 'auto' }}>
                         <List
                           size="large"
                           split={false}
-                          footer={!loading && renderFooter()}
-                          loading={loading}
-                          dataSource={data.list}
+                          footer={!firstRequest.loading && renderFooter()}
+                          loading={firstRequest.loading}
+                          dataSource={firstRequest.data?.list}
                           renderItem={item => <List.Item className={classnames(item.gradeno === clickVal.gradeno ?'active':'')}
+                            key={item.id}
                             onClick={()=>setClickVal(item)}>
                             <i className={classnames("iconfont",'iconwenjianjia')} />
                             {item.gradename}
@@ -139,11 +186,13 @@ const CalligraphyPage = () => {
                         <List
                           size="large"
                           split={false}
-                          dataSource={data2}
-                          renderItem={item => <List.Item className={classnames(item.id === c_clickVal.id ?'active':'')}
+                          footer={!secondRequest.loading && renderFooter2()}
+                          loading={secondRequest.loading}
+                          dataSource={secondRequest.data?.list}
+                          renderItem={item => <List.Item className={classnames(item.courseno === c_clickVal.courseno ?'active':'')}
                             onClick={()=>setC_ClickVal(item)}>
                             <i className={classnames("iconfont",'iconshipindianshi')} />
-                            {item.text}
+                            {item.coursename}
                             <span onClick={(e) =>buyEvent(e.stopPropagation(),true)}>{item.buy === 1 ? '购买':''}</span>
                           </List.Item>}
                         />
