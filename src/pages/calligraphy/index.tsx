@@ -1,7 +1,7 @@
 /** @format */
 
-import React, {useState} from "react"
-import { Avatar,Tabs,List } from 'antd'
+import React, {useState, useRef} from "react"
+import { Avatar,Tabs,List,Button } from 'antd'
 import styles from "./index.scss"
 import classnames from "classnames"
 import gradeSchool from '../../assets/calligraphy/gradeSchool.png'
@@ -16,6 +16,7 @@ import {useRequest} from "ahooks"
 
 const CalligraphyPage = () => {
   const { TabPane } = Tabs;
+
 
   const data2 =[
     {id: 1, text: '课时1', buy: 0 },
@@ -34,26 +35,37 @@ const CalligraphyPage = () => {
 
   // gSchool-小学， pSchool-通用
   const [typeKey, setKey] = useState('gSchool')
-
-  const {data, loadingMore} = useRequest(
+  const containerRef = useRef<HTMLDivElement>(null);
+  const {data, loading, loadingMore,noMore,loadMore} = useRequest(
     (d) => API.getCalligraphyList(
       {
-        page:'1',
-        versionType: typeKey === 'gSchool'?'1':'0',
+        page: (d?.currPage +1 || 1)+ '',
+        versionType: typeKey === 'gSchool'?'0':'1',
         limit:'10'
       }),
     {
       loadMore: true,
-      isNoMore: (d: any) => !d.hasMore,
+      isNoMore: d => (d ? d.list.length >= d.total : false),
       formatResult: (response) => {
         return {
           list: response.code === 0 ? response.page.list : [],
-          total: 100,
-          hasMore: response.code === 0 ? response.more : false
+          total: response.page.totalCount,
+          currPage: response.page.currPage,
+          hasMore: response.code === 0 ? response.page.totalCount < response.page.currPage: false
         }
       }
     }
   )
+  const renderFooter = () => (
+    <>
+      {!noMore && (
+       <span style={{textAlign:'center',display: "block", color:"#FFBF25"}} onClick={loadMore}  className={classnames('')}>
+          {loadingMore ? '加载中....' : '点击加载更多'}
+        </span>
+      )}
+      {noMore && <span style={{textAlign:'center',display: "block", color:"#FFBF25"}}>没有更多数据了</span>}
+    </>
+  );
   const [clickVal, setClickVal] = useState({id:data.list.length ?data.list[0].gradeno: 0,text:typeKey==='pSchool' ? '' :data.list.length ? data.list[0].gradename:''})
   const [c_clickVal, setC_ClickVal] = useState({id:1,text:typeKey==='pSchool' ?data2[0].text :''})
 
@@ -103,14 +115,16 @@ const CalligraphyPage = () => {
                   <Avatar src={typeKey === 'gSchool'? g_avatar: p_avatar} />
                   <span className={styles.c_title}>{typeKey === 'gSchool'? '小学同步教学':'成人版通用教学'}</span>
                 </div>
-                <div className={classnames("calligraphy_c_tabs")}>
+                <div className={classnames("calligraphy_c_tabs")} >
                   <Tabs defaultActiveKey="1" centered>
                     {typeKey === 'gSchool'?
                     <TabPane tab="年级" key="1">
-                      <div className={classnames('gList')}>
+                      <div className={classnames('gList')} ref={containerRef} style={{ height: 311, overflowY: 'auto' }}>
                         <List
                           size="large"
                           split={false}
+                          footer={!loading && renderFooter()}
+                          loading={loading}
                           dataSource={data.list}
                           renderItem={item => <List.Item className={classnames(item.gradeno === clickVal.gradeno ?'active':'')}
                             onClick={()=>setClickVal(item)}>
