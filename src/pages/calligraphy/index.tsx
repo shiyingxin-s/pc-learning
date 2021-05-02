@@ -13,8 +13,6 @@ import {useBoolean, useSet} from "ahooks"
 import BuyModalBox from "@/components/BuyModalBox"
 import API from "@/api"
 import {useRequest} from "ahooks"
-import { act } from 'react-test-renderer'
-import { run } from 'jest'
 
 const CalligraphyPage = () => {
   const { TabPane } = Tabs;
@@ -42,7 +40,6 @@ const CalligraphyPage = () => {
     fr({typeKey: val})
   }
 
-  const containerRef = useRef<HTMLDivElement>(null);
   const {
     data,
     loading,
@@ -236,9 +233,8 @@ const CalligraphyPage = () => {
                 </div>
                 <div className={classnames("calligraphy_c_tabs")} >
                   <Tabs activeKey={couseKey} centered  onChange={onchange}>
-                    {/* {typeKey === 'gSchool'? */}
                     <TabPane tab="年级" key="1">
-                      <div className={classnames('gList')} ref={containerRef} style={{ height: 311, overflowY: 'auto' }}>
+                      <div className={classnames('gList')}  style={{ height: 311, overflowY: 'auto' }}>
                         <List
                           size="large"
                           split={false}

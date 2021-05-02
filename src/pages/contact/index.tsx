@@ -6,8 +6,15 @@ import c_b_img from '../../assets/c_b_img.png'
 import styles from "./index.scss"
 import classnames from "classnames"
 import {Divider} from "antd"
+import API from "@/api"
+import {useRequest} from "ahooks"
 
 const ContactPage = () => {
+
+  const {data} = useRequest(
+    () => API.getContactInfo()
+  )
+
   return (
     <div className={styles._content}>
       <div className={styles.banner}>
@@ -19,9 +26,7 @@ const ContactPage = () => {
           <span className={styles.desc}>Contact us</span>
         </div>
         <div className={styles.introduce}>
-        这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍
-        这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍
-        这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍
+          {data?.info?.introduce}
         </div>
         <div className={styles.con_bottom}>
             <div className={classnames(styles.item)}>
@@ -30,10 +35,10 @@ const ContactPage = () => {
             <div className={classnames(styles.item,styles.content)}>
               <span className={styles.title}>习格标练字网</span>
               <Divider />
-              <p><i className={classnames("iconfont",'iconphone-channel',styles.iStyle)} /> 电话：XXXXX</p>
-              <p><i className={classnames("iconfont",'icondizhi',styles.iStyle)} /> 地址：陕西省西安市雁塔区鱼化寨地铁口</p>
-              <p><i className={classnames("iconfont",'iconyouxiang',styles.iStyle)} /> 邮箱：XXXX</p>
-              <p><i className={classnames("iconfont",'iconwifi',styles.iStyle)} /> www.sdfsf</p>
+              <p><i className={classnames("iconfont",'iconphone-channel',styles.iStyle)} /> 电话： {data?.info?.phoneNo}</p>
+              <p><i className={classnames("iconfont",'icondizhi',styles.iStyle)} /> 地址：{data?.info?.address}</p>
+              <p><i className={classnames("iconfont",'iconyouxiang',styles.iStyle)} /> 邮箱：{data?.info?.email}</p>
+              <p><i className={classnames("iconfont",'iconwifi',styles.iStyle)} /> {data?.info?.website}</p>
             </div>
         </div>
       </div>

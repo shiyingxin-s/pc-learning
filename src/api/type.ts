@@ -14,7 +14,12 @@ export enum FetchUrl {
  /**
   *  获取课程详情
   */
-  courseDetail = '/course/info'
+  courseDetail = '/course/info',
+
+  /**
+   * 获取联系方式
+   */
+  contactInfo ='/contactus/info'
 
 }
 
