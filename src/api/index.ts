@@ -14,7 +14,8 @@ export class API {
   // 根据年级获取 课程列表
   static getCourseList = (data: any) => request(FetchUrl.courseList,{data, ...POST})
 
-
+  // 根据课程Id 获取课程详情
+  static getCourseDetail = (data: any) => request(FetchUrl.courseDetail,{data, ...POST})
 
 }
 

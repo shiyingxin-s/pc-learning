@@ -1,7 +1,7 @@
 /** @format */
 
 import React, {useState, useRef, useEffect} from "react"
-import { Avatar,Tabs,List,Button } from 'antd'
+import { Avatar,Tabs,List, message } from 'antd'
 import styles from "./index.scss"
 import classnames from "classnames"
 import gradeSchool from '../../assets/calligraphy/gradeSchool.png'
@@ -9,45 +9,55 @@ import general from '../../assets/calligraphy/general.png'
 import g_avatar from '../../assets/calligraphy/g_avatar.png'
 import p_avatar from '../../assets/calligraphy/p_avatar.png'
 import { Player, BigPlayButton } from "video-react"
-import {useBoolean} from "ahooks"
+import {useBoolean, useSet} from "ahooks"
 import BuyModalBox from "@/components/BuyModalBox"
 import API from "@/api"
 import {useRequest} from "ahooks"
 import { act } from 'react-test-renderer'
+import { run } from 'jest'
 
 const CalligraphyPage = () => {
   const { TabPane } = Tabs;
 
 
-  // const data2 =[
-  //   {id: 1, text: '课时1', buy: 0 },
-  //   {id: 2, text: '课时2', buy: 0 },
-  //   {id: 3, text: '课时3', buy: 0 },
-  //   {id: 4, text: '课时4', buy: 0 },
-  //   {id: 5, text: '课时5', buy:1 },
-  //   {id: 6, text: '课时6', buy:1 },
-  //   {id: 7, text: '课时7', buy:1 },
-  //   {id: 8, text: '课时8', buy:1 },
-  //   {id: 9, text: '课时9', buy:1 },
-  //   {id: 10, text: '课时10', buy:1 },
-  //   {id: 11, text: '课时11', buy:1 },
-  //   {id: 12, text: '课时12', buy:1 }
-  // ]
-
   // gSchool-小学， pSchool-通用
-  const [typeKey, setKey] = useState('gSchool')
+  const [typeKey,setKey] = useState('gSchool')
   const [clickVal, setClickVal] = useState({gradeno: 0, gradename:''})
-  const [c_clickVal, setC_ClickVal] = useState({courseno:0,coursename:''})
+  const [c_clickVal, setC_ClickVal] = useState({courseno:0, coursename:''})
+  const [courseDetail, setCourse] = useState({
+    videoPath: '',
+    pic:'',
+    activeChar:'',
+    phraseList: [],
+    pronunciation:'',
+    startposition: '',
+    structure:''
+  })
+  const [couseKey, setCourseKey] = useState('1')
+
+  const setKeyFun = (val: string) =>{
+    setCourseKey('1')
+    setKey(val)
+    setClickVal({gradeno: 0, gradename:'' })
+    fr({typeKey: val})
+  }
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const firstRequest = useRequest(
+  const {
+    data,
+    loading,
+    loadingMore,
+    noMore,
+    loadMore ,
+    run: fr} = useRequest(
     (d) => API.getCalligraphyList(
       {
         page: (d?.currPage +1 || 1)+ '',
-        versionType: typeKey === 'gSchool'?'0':'1',
+        versionType: d.typeKey === 'gSchool'?'0':'1',
         limit:'10'
       }),
     {
+      manual: true,
       loadMore: true,
       isNoMore: d => (d ? d.list.length >= d.total : false),
       formatResult: (response) => {
@@ -62,19 +72,19 @@ const CalligraphyPage = () => {
           list: resData ? resData.list : [],
           total: resData ? resData.totalCount :0,
           currPage: resData ? resData.currPage : 0,
-          hasMore: resData ? resData.totalCount < resData.currPage: false,
+          hasMore: resData ? resData.totalCount < resData.currPage: false
         }
       }
     }
   )
   const renderFooter = () => (
     <>
-      {!firstRequest.noMore && (
-       <span style={{textAlign:'center',display: "block", color:"#FFBF25"}} onClick={firstRequest.loadMore}  className={classnames('')}>
-          {firstRequest.loadingMore ? '加载中....' : '点击加载更多'}
+      {!noMore && (
+       <span style={{textAlign:'center',display: "block", color:"#FFBF25"}} onClick={loadMore}  className={classnames('')}>
+          {loadingMore ? '加载中....' : '点击加载更多'}
         </span>
       )}
-      {firstRequest.noMore && <span style={{textAlign:'center',display: "block", color:"#FFBF25"}}>没有更多数据了</span>}
+      {noMore && <span style={{textAlign:'center',display: "block", color:"#FFBF25"}}>没有更多数据了</span>}
     </>
   );
 
@@ -82,16 +92,43 @@ const CalligraphyPage = () => {
   const buyShow = () => {
     buyEvent()
   }
-  const secondRequest = useRequest(
+  const {data: courseData, run: runCourseDetail} = useRequest(
+    (d) => API.getCourseDetail({courseno: d.courseno}),
+    {
+      manual: true,
+      onSuccess: (response) => {
+       if(response.code  === 0){
+         const resData = response.course
+         setCourse({
+          videoPath: typeKey === 'gSchool'? resData.charList[0].url: resData.videoPath,
+          pic: typeKey === 'gSchool'? '': resData.picPath,
+          activeChar: typeKey === 'gSchool'? resData.charList[0].character: '',
+          phraseList: typeKey === 'gSchool'? resData.charList[0].phraseList: [],
+          pronunciation: typeKey === 'gSchool'? resData.charList[0].pronunciation:'',
+          startposition: typeKey === 'gSchool'? resData.charList[0].startposition:'',
+          structure:typeKey === 'gSchool'? resData.charList[0].structure:''
+         })
+       }
+      }
+    }
+  )
+  const {
+    data: secondData,
+    loading:secondLoading,
+    loadingMore:secondLoadingMore,
+    noMore: secondNoMore,
+    loadMore:secondLoadMore ,
+    run: secondRequest}  = useRequest(
     (d) => API.getCourseList(
       {
-        page: (d?.currPage +1 || 1)+ '',
-        gradeNo: clickVal.gradeno + '',
+        page: (d?.listData?.length > 0 ? d.currPage +1 : 1) + '',
+        gradeNo: clickVal.gradeno +'',
         limit:'10',
       }),
     {
+      manual: true,
       loadMore: true,
-      isNoMore: d => (d ? d.list.length >= d.total : false),
+      isNoMore: d => {return !d?.hasMore},
       formatResult: (response) => {
         const resData = response.code === 0  ? response.page :''
         if(!c_clickVal.courseno){
@@ -100,36 +137,70 @@ const CalligraphyPage = () => {
             coursename: resData.list[0].coursename
           })
         }
+        runCourseDetail({courseno:resData.list[0].courseno})
         return {
-          list: resData ? resData.list : [],
+          listData: resData ?(resData.currPage === 1?resData.list: secondData.listData.concat(resData.list)) : [],
           total: resData ? resData.totalCount :0,
           currPage: resData ? resData.currPage : 0,
-          hasMore: resData ? resData.totalCount < resData.currPage: false,
+          hasMore: resData ?resData.currPage < resData.totalPage  : false,
         }
       }
     }
   )
   const renderFooter2 =() =>(
     <>
-      {!secondRequest.noMore && (
-        <span style={{textAlign:'center',display: "block", color:"#FFBF25",float:"unset"}} onClick={secondRequest.loadMore}>
-          {secondRequest.loadingMore ? '加载中....' : '点击加载更多'}
+      {!secondNoMore && (
+        <span style={{textAlign:'center',display: "block", color:"#FFBF25",float:"unset"}} onClick={secondLoadMore}>
+          {secondLoadingMore ? '加载中....' : '点击加载更多'}
         </span>
       )}
-      {secondRequest.noMore && <span style={{textAlign:'center',display: "block", color:"#FFBF25", float:"unset"}}>没有更多数据了</span>}
+      {secondNoMore && <span style={{textAlign:'center',display: "block", color:"#FFBF25", float:"unset"}}>没有更多数据了</span>}
     </>
   );
+
+  const  onchange = (activeKey: string) =>{
+    setCourseKey(activeKey)
+    if(activeKey === '2') {
+      secondRequest({currPage :1})
+    }
+  }
+  const clickCharacter = (item: object) =>{
+    setCourse({
+      videoPath: item.url ,
+      pic: '',
+      activeChar: item.character,
+      phraseList: item.phraseList,
+      pronunciation: item.pronunciation,
+      startposition: item.startposition,
+      structure:item.structure
+    })
+  }
+  const courseClickVal = (item: object, index: Number) =>{
+    if(index <= 2){
+      setC_ClickVal({
+        courseno: item.courseno,
+        coursename:item.coursename
+      })
+      runCourseDetail({courseno:item.courseno})
+    } else {
+      message.info("请购买该课程")
+    }
+  }
+
+  useEffect(() => {
+    fr({typeKey: 'gSchool'})
+  }, [])
 
   return (
     <div className={classnames(styles._content)}>
       <div className={classnames("container",styles.top_box)}>
-        <div className={classnames(styles.tItem)} onClick={() => setKey('gSchool')}>
+        <div className={classnames(styles.tItem)} onClick={() => setKeyFun('gSchool')}>
           <div className={classnames(styles.tab_box, typeKey === 'gSchool'?styles.active :'')}>
               <img src={gradeSchool}/>
           </div>
           <div className={styles.title}>小学同步教学</div>
         </div>
-        <div className={classnames(styles.tItem)} onClick={() => setKey('pSchool')}>
+        <div className={classnames(styles.tItem)} onClick={() => setKeyFun('pSchool')}>
           <div className={classnames(styles.tab_box, typeKey === 'pSchool'?styles.active :'')}>
               <img src={general}/>
           </div>
@@ -150,11 +221,13 @@ const CalligraphyPage = () => {
             </div>
             <div className={styles.course_top}>
               <div className={styles.c_item1}>
-                <Player
-                  poster={gradeSchool}
-                  src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4">
-                  <BigPlayButton position="center" />
-                </Player>
+                {courseDetail.videoPath?
+                  <Player
+                    poster={gradeSchool}
+                    src={courseDetail.videoPath}>
+                    <BigPlayButton position="center" />
+                  </Player>
+                :<img src={gradeSchool} style={{ height:'440px',width:'98%' }}/>}
               </div>
               <div className={styles.c_item2}>
                 <div className={styles.c_top}>
@@ -162,17 +235,17 @@ const CalligraphyPage = () => {
                   <span className={styles.c_title}>{typeKey === 'gSchool'? '小学同步教学':'成人版通用教学'}</span>
                 </div>
                 <div className={classnames("calligraphy_c_tabs")} >
-                  <Tabs defaultActiveKey="1" centered  onChange={()=>{secondRequest.run}}>
-                    {typeKey === 'gSchool'?
+                  <Tabs activeKey={couseKey} centered  onChange={onchange}>
+                    {/* {typeKey === 'gSchool'? */}
                     <TabPane tab="年级" key="1">
                       <div className={classnames('gList')} ref={containerRef} style={{ height: 311, overflowY: 'auto' }}>
                         <List
                           size="large"
                           split={false}
-                          footer={!firstRequest.loading && renderFooter()}
-                          loading={firstRequest.loading}
-                          dataSource={firstRequest.data?.list}
-                          renderItem={item => <List.Item className={classnames(item.gradeno === clickVal.gradeno ?'active':'')}
+                          footer={!loading && renderFooter()}
+                          loading={loading}
+                          dataSource={data?.list}
+                          renderItem={(item) => <List.Item className={classnames(item.gradeno === clickVal.gradeno ?'active':'')}
                             key={item.id}
                             onClick={()=>setClickVal(item)}>
                             <i className={classnames("iconfont",'iconwenjianjia')} />
@@ -180,21 +253,23 @@ const CalligraphyPage = () => {
                           </List.Item>}
                         />
                       </div>
-                    </TabPane>:''}
+                    </TabPane>
                     <TabPane tab="课程目录" key="2">
                       <div className={classnames('cList')}>
                         <List
                           size="large"
                           split={false}
-                          footer={!secondRequest.loading && renderFooter2()}
-                          loading={secondRequest.loading}
-                          dataSource={secondRequest.data?.list}
-                          renderItem={item => <List.Item className={classnames(item.courseno === c_clickVal.courseno ?'active':'')}
-                            onClick={()=>setC_ClickVal(item)}>
+                          footer={!secondLoading && renderFooter2()}
+                          loading={secondLoading}
+                          dataSource={secondData?.listData}
+                          renderItem={(item,index) => <List.Item className={classnames(item.courseno === c_clickVal.courseno ?'active':'')}
+                            onClick={()=>courseClickVal(item,index)}>
                             <i className={classnames("iconfont",'iconshipindianshi')} />
                             {item.coursename}
-                            <span onClick={(e) =>buyEvent(e.stopPropagation(),true)}>{item.buy === 1 ? '购买':''}</span>
-                          </List.Item>}
+                            {index > 2?
+                            <span onClick={(e) =>buyEvent(e.stopPropagation(),true)}>{'购买'}</span>
+                            :''}
+                            </List.Item>}
                         />
                       </div>
                     </TabPane>
@@ -202,84 +277,60 @@ const CalligraphyPage = () => {
                 </div>
               </div>
             </div>
-            <div className={styles.words}>
-              <div className={classnames(styles.w_item,styles.active) }>
-                话
+            { typeKey === 'gSchool'?
+              <div className={styles.words}>
+                {courseData?.course?.charList.map((item)=>{
+                  return (
+                    <div className={classnames(item.character === courseDetail.activeChar? styles.active: '', styles.w_item)}
+                    onClick= {()=>clickCharacter(item)}>
+                    {item.character}
+                    </div>
+                  )
+                })}
               </div>
-              <div className={styles.w_item}>
-                画
-              </div>
-              <div className={styles.w_item}>
-                百
-              </div>
-              <div className={styles.w_item}>
-                就
-              </div>
-              <div className={styles.w_item}>
-                啦
-              </div>
-              <div className={styles.w_item}>
-                啦
-              </div>
-              <div className={styles.w_item}>
-                啦
-              </div>
-            </div>
-            <div className={styles.font_img}>
-              <img src="http://121.37.21.57:8089/course/485a4616-b96e-4c3b-97ed-5f594a64bf8a.jpg"/>
-            </div>
-            <div className={styles.font_structure}>
-              <div className={styles.s_item}>
-                <div className={styles.font_btn}>
-                  <span>字体结构</span>
-                </div>
-                <div className={styles.structure}>
-                  <div className={styles.st_item}>
-                    <p>部首</p>
-                    <span>氵</span>
+            : ''}
+            {courseDetail.pic ?
+              <div className={styles.font_img}>
+                <img src={courseDetail.pic}/>
+              </div>: ''
+            }
+            {typeKey === 'gSchool' && courseDetail.startposition ?
+              <div className={styles.font_structure}>
+                <div className={styles.s_item}>
+                  <div className={styles.font_btn}>
+                    <span>字体结构</span>
                   </div>
-                  <div className={styles.st_item}>
-                    <p>结构</p>
-                    <span>左右结构</span>
-                  </div>
-                  <div className={styles.st_item}>
-                    <p>读音</p>
-                    <span>bo</span>
+                  <div className={styles.structure}>
+                    <div className={styles.st_item}>
+                      <p>部首</p>
+                      <span>{courseDetail.startposition}</span>
+                    </div>
+                    <div className={styles.st_item}>
+                      <p>结构</p>
+                      <span>{courseDetail.structure}</span>
+                    </div>
+                    <div className={styles.st_item}>
+                      <p>读音</p>
+                      <span>{courseDetail.pronunciation}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className={styles.s_item}>
-                <div className={styles.font_btn}>
-                  <span>词组</span>
-                </div>
-                <div className={styles.phrase}>
-                  <div className={styles.ph_item}>
-                    湖泊
+                <div className={styles.s_item}>
+                  <div className={styles.font_btn}>
+                    <span>词组</span>
                   </div>
-                  <div className={styles.ph_item}>
-                    湖泊
-                  </div>
-                  <div className={styles.ph_item}>
-                    湖泊
-                  </div>
-                  <div className={styles.ph_item}>
-                    湖泊
-                  </div>
-                  <div className={styles.ph_item}>
-                    湖泊
-                  </div>
-                  <div className={styles.ph_item}>
-                    湖泊
-                  </div>
-                  <div className={styles.ph_item}>
-                    湖泊
-                  </div>
-                  <div className={styles.ph_item}>
-                    湖泊
+                  <div className={styles.phrase}>
+                    {courseDetail.phraseList.map((item)=>{
+                      return (
+                        <div className={styles.ph_item}>
+                          {item}
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
               </div>
-            </div>
+            :''}
           </div>
         </div>
       </div>

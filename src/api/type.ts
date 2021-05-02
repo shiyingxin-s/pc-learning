@@ -9,7 +9,12 @@ export enum FetchUrl {
   /**
    *  获取课程列表
    */
- courseList ='/course/list'
+ courseList ='/course/list',
+
+ /**
+  *  获取课程详情
+  */
+  courseDetail = '/course/info'
 
 }
 

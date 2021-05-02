@@ -153,7 +153,10 @@ em {
 .video-react .video-react-volume-level {
   left: -2px !important;
 }
-
+.video-react.video-react-fluid, .video-react .video-react-video{
+  height: 438px;
+  padding-top: unset !important;
+}
 // antd样式重写 -- list 分页style
 
 .ant-list-pagination{
