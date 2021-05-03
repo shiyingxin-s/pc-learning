@@ -38,7 +38,7 @@ const NewsGPage = () => {
               loading={loading}
               itemLayout="vertical"
               size="large"
-              pagination={{...(pagination as any),  pageSize: 3}}
+              pagination={{ pageSize: 3}}
               dataSource={data?.list}
               renderItem={item => (
                 <List.Item  key={item.title}
