@@ -42,7 +42,8 @@ const TextbookPage = () => {
                     <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
                 </div>
                 <div className={styles._bottom}>
-                  <span >{item.gradename}</span>
+                  <span style={{lineHeight:'30px',fontSize:'18px',width: '186px',
+                    display: 'inline-block'}}>{item.gradename}</span>
                   <span className={styles._buyBtn} onClick={(e) =>buyEvent(e.stopPropagation(),true)}>
                     <i className={classnames("iconfont",'icongouwuche')} />
                     <span className={styles._buyText}>购买</span>

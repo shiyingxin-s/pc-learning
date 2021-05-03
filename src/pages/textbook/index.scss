@@ -28,15 +28,15 @@
         height: 80px;
         color: #ffffff;
         width: 330px;
-        line-height: 80px;
         font-size: 24px;
         font-weight: 300;
-        padding:0 32px ;
+        padding:10px 22px  0;
         ._buyBtn{
           color: #FFBF25;
           float: right;
           ._buyText{ 
             margin-left: 5px;
+            line-height: 80px;
           }
         }
       }

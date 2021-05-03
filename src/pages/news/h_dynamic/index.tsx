@@ -5,19 +5,31 @@ import banner from "../../../assets/news_banner.png"
 import {Row,  List} from "antd"
 import styles from "./index.scss"
 import classnames from "classnames"
-import {useHistory, request} from "umi"
+import {useHistory} from "umi"
+import moment from "moment"
+import API from "@/api"
+import {useRequest} from "ahooks"
 
 const NewsHPage = () => {
   const history = useHistory()
 
-  const listData = [];
-  for (let i = 0; i < 10; i++) {
-    listData.push({
-      title: `这老师讲课绝了，音色绝了，听这声音，再加上铿锵有力的声音，爱了爱了，这课绝妙呀这老师讲课绝了，音色绝了，听这声音，再加上铿锵有力的声音，爱了爱了，这课绝妙呀这老师讲课绝了，音色绝了，听这声音，再加上铿锵有力的声音，爱了爱了，这课绝妙呀 ${i}`,
-      coverImg: 'https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png',
-      date:'2021-08-12'
-    });
-  }
+  const {data, pagination, loading} = useRequest(
+    ({current, pageSize}) =>
+      API.getNewsList({
+        page: current + '',
+        limit: pageSize + '',
+        type: '0'
+      }),
+    {
+      paginated: true,
+      formatResult: (response) => {
+        return {
+          list: response.code === 0 ? response?.page?.list : [],
+          total: response.code === 0 ? response?.page?.totalCount : 0
+        }
+      }
+    }
+  )
     return (
       <div className={classnames("container", styles._content)}>
         <div className={styles.titleImg}>
@@ -74,28 +86,29 @@ const NewsHPage = () => {
           </div>
           <div className={styles.newsList}>
           <List
+              loading={loading}
               itemLayout="vertical"
               size="large"
-              pagination={{
-                onChange: page => {
-                  console.log(page);
-                },
-                pageSize: 3,
-              }}
-              dataSource={listData}
-
+              pagination={{...(pagination as any),  pageSize: 3}}
+              dataSource={data?.list}
               renderItem={item => (
                 <List.Item  key={item.title}
                 extra={
-                 <span>{item.date}</span>}
+                 <span>{moment(item.lmtime).format("YYYY-MM-DD")}</span>}
                 >
                   <List.Item.Meta
                       avatar={ <img
                       height={146}
                       alt="logo"
-                      src={item.coverImg}
+                      src={item.images}
                     />}
-                    title={item.title}
+                    title=
+                    {
+                      <div className={styles.content}>
+                        <div>{item.title}</div>
+                        <span>{item.contenttext}</span>
+                      </div>
+                    }
                   />
                 </List.Item>
               )}

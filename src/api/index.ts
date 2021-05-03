@@ -20,6 +20,9 @@ export class API {
   // 获取联系方式
   static getContactInfo = () => request(FetchUrl.contactInfo,{...POST})
 
+  // 获取新闻列表
+  static getNewsList = (data: any) => request(FetchUrl.newsList, {data, ...POST})
+
 }
 
 

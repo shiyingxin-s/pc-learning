@@ -19,8 +19,12 @@ export enum FetchUrl {
   /**
    * 获取联系方式
    */
-  contactInfo ='/contactus/info'
+  contactInfo ='/contactus/info',
 
+  /**
+   * 获取新闻列表
+   */
+  newsList = '/news/list'
 }
 
 enum Banner {

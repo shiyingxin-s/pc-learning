@@ -4,6 +4,7 @@ interface CssExports {
   '_content': string;
   'c_Img': string;
   'chromeframe': string;
+  'content': string;
   'h_item': string;
   'h_title': string;
   'hotList': string;
