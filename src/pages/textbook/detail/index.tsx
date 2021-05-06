@@ -6,14 +6,25 @@ import Draggable from "react-draggable"
 import Slider from "react-slick"
 import styles from "../index.scss"
 import classnames from "classnames"
-import {useBoolean} from "ahooks"
+import {useBoolean, useRequest} from "ahooks"
 import BuyModalBox from "@/components/BuyModalBox"
+import API from "@/api"
+import {history} from "umi"
+
 
 const TextbookDetailPage = () => {
+  const {query} = history.location
   const [buyVisible,{toggle: buyEvent}] = useBoolean(false)
   const buyShow = () => {
     buyEvent()
   }
+
+  const {data} = useRequest(
+    () =>
+      API.getTextbookDetail({
+        id: query.id
+      })
+  )
 
   const htmls = '<div>3213213<span>54654</span></div>'
   // const slider = useRef<any>(null)
@@ -42,7 +53,7 @@ const TextbookDetailPage = () => {
     customPaging: function(i) {
       return (
         <a>
-          <img src={`${baseUrl}/abstract0${i + 1}.jpg`} />
+          <img src={data?.grade?.pictures[i]} />
         </a>
       );
     },
@@ -58,29 +69,22 @@ const TextbookDetailPage = () => {
       <div className={styles.top_box}>
         <div className={styles.top_Item}>
           <Slider {...settings}>
-            <div className={classnames("item")}>
-              <img src={baseUrl + "/abstract01.jpg"} />
-            </div>
-            <div className={classnames("item")}>
-              <img src={baseUrl + "/abstract02.jpg"} />
-            </div>
-            <div className={classnames("item")}>
-              <img src={baseUrl + "/abstract03.jpg"} />
-            </div>
-            <div className={classnames("item")}>
-              <img src={baseUrl + "/abstract04.jpg"} />
-            </div>
+            {data?.grade?.pictures.map((item)=>{
+              return(
+                <div key={item} className={classnames("item")}>
+                <img src={item} />
+                </div>
+              )
+            })
+           }
           </Slider>
         </div>
         <div className={styles.top_Item,styles.content}>
-            <span className={styles.title}>《通用版教材》</span>
-            <p className={styles.price}>¥55</p>
-            <p className={styles.author}>作者：小小</p>
+            <span className={styles.title}>{data?.grade?.gradename}</span>
+            <p className={styles.price}>¥{data?.grade?.price}</p>
+            <p className={styles.author}>作者：{data?.grade?.author}</p>
             <span className={styles.desc}>
-              这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简
-              这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简
-              这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简
-              这里是简介这里是简介这里是简介这里是简介这里是简介这里是简介这里是简
+              {data?.grade?.introduction}
             </span>
           <Button type="primary" className={classnames('textbook_buy_btn')} onClick={() =>buyEvent(true)}>
             购买
@@ -91,7 +95,7 @@ const TextbookDetailPage = () => {
           <div className={styles.division}>
             <Divider plain>详细信息</Divider>
           </div>
-          <div className={styles.con_box} dangerouslySetInnerHTML = {{__html:htmls}}></div>
+          <div className={classnames("html_con",styles.con_box) } dangerouslySetInnerHTML = {{__html:data?.grade?.detail}}></div>
       </div>
       {buyVisible? <BuyModalBox buyVisible={buyVisible} onBuy={buyShow} />:''}
   </div>

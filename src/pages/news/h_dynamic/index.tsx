@@ -9,10 +9,19 @@ import {useHistory} from "umi"
 import moment from "moment"
 import API from "@/api"
 import {useRequest} from "ahooks"
+import Item from 'antd/lib/list/Item'
 
 const NewsHPage = () => {
+
   const history = useHistory()
 
+  const {data: hotData, loading: hotLoading} = useRequest(
+    () =>
+      API.getNewsList({
+        page: 1 + '',
+        limit: 5 + '',
+      })
+  )
   const {data, pagination, loading} = useRequest(
     ({current, pageSize}) =>
       API.getNewsList({
@@ -41,42 +50,16 @@ const NewsHPage = () => {
           </div>
           <div className={styles.hotList}>
             <Row>
-              <div className={styles.h_item} onClick={() => history.push(`../news/detail?id=111`)}>
-                <div className={styles.c_Img}>
-                    <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
-                </div>
-                <div className={styles.h_title}>我把话撂这儿。这是全平台（注意，我指互联网全平台），讲最好的React课程没有之一（注意，哪怕是违法广告法的情况下）</div>
-              </div>
-              <div className={styles.h_item}>
-                <div className={styles.c_Img}>
-                    <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
-                </div>
-                <div className={styles.h_title}>我把话撂这儿。这是全平台（注意，我指互联网全平台），讲最好的React课程没有之一（注意，哪怕是违法广告法的情况下）</div>
-              </div>
-              <div className={styles.h_item}>
-                <div className={styles.c_Img}>
-                    <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
-                </div>
-                <div className={styles.h_title}>我把话撂这儿。这是全平台（注意，我指互联网全平台），讲最好的React课程没有之一（注意，哪怕是违法广告法的情况下）</div>
-              </div>
-              <div className={styles.h_item}>
-                <div className={styles.c_Img}>
-                    <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
-                </div>
-                <div className={styles.h_title}>我把话撂这儿。这是全平台（注意，我指互联网全平台），讲最好的React课程没有之一（注意，哪怕是违法广告法的情况下）</div>
-              </div>
-              <div className={styles.h_item}>
-                <div className={styles.c_Img}>
-                    <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
-                </div>
-                <div className={styles.h_title}>我把话撂这儿。这是全平台（注意，我指互联网全平台），讲最好的React课程没有之一（注意，哪怕是违法广告法的情况下）</div>
-              </div>
-              <div className={styles.h_item}>
-                <div className={styles.c_Img}>
-                    <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
-                </div>
-                <div className={styles.h_title}>我把话撂这儿。这是全平台（注意，我指互联网全平台），讲最好的React课程没有之一（注意，哪怕是违法广告法的情况下）</div>
-              </div>
+              {hotData?.page?.list.map((item,index)=>{
+                return(
+                  <div  key={item.id}  className={styles.h_item} onClick={() => history.push(`../news/detail?id=`+ item.newsno)}>
+                    <div className={styles.c_Img}>
+                        <img src={item.images} />
+                    </div>
+                    <div className={styles.h_title}>{item.title}</div>
+                  </div>
+                )
+              })}
             </Row>
           </div>
         </section>
@@ -92,7 +75,7 @@ const NewsHPage = () => {
               pagination={{ pageSize: 3}}
               dataSource={data?.list}
               renderItem={item => (
-                <List.Item  key={item.title}
+                <List.Item  key={item.title} onClick={() => history.push(`../news/detail?id=`+ item.newsno)}
                 extra={
                  <span>{moment(item.lmtime).format("YYYY-MM-DD")}</span>}
                 >

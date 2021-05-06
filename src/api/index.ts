@@ -23,6 +23,12 @@ export class API {
   // 获取新闻列表
   static getNewsList = (data: any) => request(FetchUrl.newsList, {data, ...POST})
 
+  // 获取新闻详情
+  static getNewsDetail = (data: any) => request(FetchUrl.newsDetail+ '/' + data.id, {data, ...POST})
+
+  // 获取新闻详情
+  static getTextbookDetail = (data: any) => request(FetchUrl.textbookDetail + '/' + data.id, {data, ...POST})
+
 }
 
 

@@ -3,33 +3,43 @@
 import React from "react"
 import banner from "../../../assets/news_banner.png"
 import {Row,  List} from "antd"
+import { Player, BigPlayButton } from "video-react"
+import {history} from "umi"
 import styles from "./index.scss"
 import classnames from "classnames"
+import API from "@/api"
+import {useRequest} from "ahooks"
+import moment from "moment"
+
+
 
 const NewsDetailPage = () => {
 
+  const {query} = history.location
+
+  const {data} = useRequest(
+    () =>
+      API.getNewsDetail({
+        id: query.id
+      })
+  )
     return (
       <div className={classnames("container", styles._content)}>
         <div className={styles.con_box}>
-          <div className={styles.title}>这是标题</div>
-          <div className={styles.date}>2021-04-06 </div>
+          <div className={styles.title}>{data?.news.title}</div>
+          <div className={styles.date}>{moment(data?.news.createtime).format("YYYY-MM-DD")} </div>
           <div className={styles.conHtml}>
-            <div>
-            这是内容这是内容这是内容这是内容这是内容这是内容，这是内容这是内容这是内容这是内。容这是内容这是内容这是内容这是内容
-这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容。
-        这是内容这是内容这是内容这是内容这是内容这是内容，这是内容这是内容这是内容这是内。容这是内容这是内容这是内容这是内容
-这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容。这是内容这是内容这是内
-容这是内容这是内容这是内容，这是内容这是内容这是内容这是内。容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这
-是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容。
+          {data?.news.video?
+            <Player
+            poster={data?.news.images}
+            src={data?.news.video}>
+            <BigPlayButton position="center" />
+            </Player>: ''}
+            <div style={{textAlign:"center"}}>
+              <img src={data?.news.images}  />
             </div>
-            <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
             <div>
-            这是内容这是内容这是内容这是内容这是内容这是内容，这是内容这是内容这是内容这是内。容这是内容这是内容这是内容这是内容
-这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容。
-        这是内容这是内容这是内容这是内容这是内容这是内容，这是内容这是内容这是内容这是内。容这是内容这是内容这是内容这是内容
-这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容。这是内容这是内容这是内
-容这是内容这是内容这是内容，这是内容这是内容这是内容这是内。容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这
-是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容。
+              {data?.news.contenttext}
             </div>
           </div>
         </div>

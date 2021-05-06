@@ -277,7 +277,7 @@ const CalligraphyPage = () => {
               <div className={styles.words}>
                 {courseData?.course?.charList.map((item)=>{
                   return (
-                    <div className={classnames(item.character === courseDetail.activeChar? styles.active: '', styles.w_item)}
+                    <div key={item.id} className={classnames(item.character === courseDetail.activeChar? styles.active: '', styles.w_item)}
                     onClick= {()=>clickCharacter(item)}>
                     {item.character}
                     </div>
@@ -316,9 +316,9 @@ const CalligraphyPage = () => {
                     <span>词组</span>
                   </div>
                   <div className={styles.phrase}>
-                    {courseDetail.phraseList.map((item)=>{
+                    {courseDetail.phraseList.map((item,index)=>{
                       return (
-                        <div className={styles.ph_item}>
+                        <div className={styles.ph_item} key={item}>
                           {item}
                         </div>
                       )

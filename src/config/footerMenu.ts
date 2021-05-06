@@ -4,6 +4,7 @@
  */
 const menuList: any = [
   {
+    id: 1,
     title: "关于我们",
     path: "",
     img:'',
@@ -17,6 +18,7 @@ const menuList: any = [
     ]
   },
   {
+    id: 2,
     title: "联系我们",
     path: "",
     img:'',
@@ -42,6 +44,7 @@ const menuList: any = [
     ]
   },
   {
+    id: 3,
     title: "课程安排",
     path: "",
     img:'',
@@ -59,6 +62,7 @@ const menuList: any = [
     ]
   },
   {
+    id: 4,
     title: "其他信息",
     path: "",
     img:'',

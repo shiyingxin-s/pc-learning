@@ -24,7 +24,17 @@ export enum FetchUrl {
   /**
    * 获取新闻列表
    */
-  newsList = '/news/list'
+  newsList = '/news/list',
+
+  /**
+   *  新闻详情
+   */
+  newsDetail = '/news/detail',
+
+  /**
+   * 线下教材详情
+   */
+  textbookDetail = '/grade/detail'
 }
 
 enum Banner {

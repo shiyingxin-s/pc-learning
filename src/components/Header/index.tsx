@@ -36,7 +36,7 @@ const Header = () => {
             <div className={styles.menuList}>
               {menuList.map((item:any)=>{
                 return(
-                  <div className={styles.menuItem}>
+                  <div className={styles.menuItem} key={item.id}>
                   {renderLink(item.title, item.path, item.img)}
                  </div>
                 )

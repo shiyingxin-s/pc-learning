@@ -5,11 +5,13 @@ import {Row,  List} from "antd"
 import styles from "./index.scss"
 import classnames from "classnames"
 import API from "@/api"
+import {useHistory} from "umi"
 import {useRequest} from "ahooks"
 import moment from "moment"
 
 const NewsGPage = () => {
 
+  const history = useHistory()
   const {data, pagination, loading} = useRequest(
     ({current, pageSize}) =>
       API.getNewsList({
@@ -42,6 +44,7 @@ const NewsGPage = () => {
               dataSource={data?.list}
               renderItem={item => (
                 <List.Item  key={item.title}
+                onClick={() => history.push(`../news/detail?id=`+ item.newsno)}
                 extra={
                  <span>{moment(item.lmtime).format("YYYY-MM-DD")}</span>}
                 >

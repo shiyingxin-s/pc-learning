@@ -37,9 +37,9 @@ const TextbookPage = () => {
         <Row>
           {data?.page?.list.map((item)=>{
             return (
-              <div className={styles._item} onClick={() => history.push(`/textbook/detail?id=`+ item.gradeno)}>
+              <div key={item.id} className={styles._item} onClick={() => history.push(`/textbook/detail?id=`+ item.id)}>
                 <div className={styles._Img}>
-                    <img src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
+                    <img src={item.pictures? item.pictures[0]:''} />
                 </div>
                 <div className={styles._bottom}>
                   <span style={{lineHeight:'30px',fontSize:'18px',width: '186px',
