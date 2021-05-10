@@ -29,6 +29,8 @@ export class API {
   // 获取新闻详情
   static getTextbookDetail = (data: any) => request(FetchUrl.textbookDetail + '/' + data.id, {data, ...POST})
 
+  // 获取课程简介
+  static getCourseDesc = (data: any) => request(FetchUrl.courseDesc, {data, ...POST})
 }
 
 

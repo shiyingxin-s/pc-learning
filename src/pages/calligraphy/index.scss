@@ -21,11 +21,21 @@ $wbg:"../../assets/calligraphy/font_bg.jpg";
       text-align: center;
       .title{
         margin-top: 10px;
-        font-family: 'fontStyle' !important;
-        font-size: 26px;
         font-weight: 400;
         line-height: 60px;
-        color: #4D453D;
+        span:first-child{
+          margin-left: 36px;
+          float: left;
+          font-size: 26px;
+          font-family: 'fontStyle' !important;
+          color: #4D453D;
+        }
+        span:last-child{
+          font-size: 22px;
+          color: #A31502;
+          float: right;
+          margin-right: 36px;
+        }
       }
     }
     .tab_box {

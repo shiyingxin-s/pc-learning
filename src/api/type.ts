@@ -34,7 +34,12 @@ export enum FetchUrl {
   /**
    * 线下教材详情
    */
-  textbookDetail = '/grade/detail'
+  textbookDetail = '/grade/detail',
+
+  /**
+   * 获取课程介绍描述
+   */
+  courseDesc = '/gradeintroduce/list'
 }
 
 enum Banner {

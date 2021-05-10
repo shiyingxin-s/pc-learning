@@ -11,6 +11,7 @@ import p_avatar from '../../assets/calligraphy/p_avatar.png'
 import { Player, BigPlayButton } from "video-react"
 import {useBoolean, useSet} from "ahooks"
 import BuyModalBox from "@/components/BuyModalBox"
+import CourseModalBox from "@/components/CourseDesc"
 import API from "@/api"
 import {useRequest} from "ahooks"
 
@@ -39,7 +40,12 @@ const CalligraphyPage = () => {
     setClickVal({gradeno: 0, gradename:'' })
     fr({typeKey: val})
   }
-
+  const {data: courseInfo} = useRequest(
+    () =>
+      API.getCourseDesc({
+        page: '1'
+      })
+  )
   const {
     data,
     loading,
@@ -86,6 +92,23 @@ const CalligraphyPage = () => {
   );
 
   const [buyVisible,{toggle: buyEvent}] = useBoolean(false)
+  const [courseVisible,{toggle: clickEvent}] = useBoolean(false)
+  const [courseDesc, setDesc] = useState({
+    type: '',
+    context:''
+  })
+  const courseInfoClick = (e: React.MouseEvent, type: string) =>{
+    e.stopPropagation()
+    const listItem = courseInfo?.page?.list.filter((item: any)=> item.type === type)
+    setDesc({
+      type: listItem[0].type,
+      context: listItem[0].context
+    })
+    clickEvent(true)
+  }
+  const courseShow = () =>{
+    clickEvent()
+  }
   const buyShow = () => {
     buyEvent()
   }
@@ -195,13 +218,19 @@ const CalligraphyPage = () => {
           <div className={classnames(styles.tab_box, typeKey === 'gSchool'?styles.active :'')}>
               <img src={gradeSchool}/>
           </div>
-          <div className={styles.title}>小学同步教学</div>
+          <div className={styles.title}>
+            <span>小学同步教学</span>
+            <span onClick= {(e)=>courseInfoClick(e,'0')}>介绍>></span>
+          </div>
         </div>
         <div className={classnames(styles.tItem)} onClick={() => setKeyFun('pSchool')}>
           <div className={classnames(styles.tab_box, typeKey === 'pSchool'?styles.active :'')}>
               <img src={general}/>
           </div>
-          <div className={styles.title}>成人版通用教学</div>
+          <div className={styles.title}>
+            <span>成人版通用教学</span>
+            <span onClick= {(e)=>courseInfoClick(e,'1')}>介绍>></span>
+          </div>
         </div>
       </div>
       <div className={styles.con_box}>
@@ -262,9 +291,9 @@ const CalligraphyPage = () => {
                             onClick={()=>courseClickVal(item,index)}>
                             <i className={classnames("iconfont",'iconshipindianshi')} />
                             {item.coursename}
-                            {index > 2?
+                            {/* {index > 2?
                             <span onClick={(e) =>buyEvent(e.stopPropagation(),true)}>{'购买'}</span>
-                            :''}
+                            :''} */}
                             </List.Item>}
                         />
                       </div>
@@ -331,6 +360,12 @@ const CalligraphyPage = () => {
         </div>
       </div>
       {buyVisible? <BuyModalBox buyVisible={buyVisible} onBuy={buyShow} />:''}
+      {courseVisible?
+      <CourseModalBox
+        modalVisible={courseVisible}
+        type={courseDesc.type}
+        context = {courseDesc.context}
+        onClose={courseShow}/> : ''}
     </div>
   )
 }
