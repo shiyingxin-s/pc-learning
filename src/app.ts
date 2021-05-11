@@ -28,7 +28,7 @@ const errorHandler = (error: any) => {
   return Promise.reject(error)
 }
 
-// 'https://xbgxizi.com/xbg-api/web
+// 'https://www.xbgxizi.com/xbg-api/web
 export const request: RequestConfig = {
   prefix: '/api',
   timeout: 100000, // 部分接口响应偏慢

@@ -30,11 +30,22 @@ const CalligraphyPage = () => {
     phraseList: [],
     pronunciation:'',
     startposition: '',
-    structure:''
+    structure:'',
+    type: null,
   })
   const [couseKey, setCourseKey] = useState('1')
 
   const setKeyFun = (val: string) =>{
+    setCourse({
+      videoPath: '',
+      pic:'',
+      activeChar:'',
+      phraseList: [],
+      pronunciation:'',
+      startposition: '',
+      structure:'',
+      type: null
+    })
     setCourseKey('1')
     setKey(val)
     setClickVal({gradeno: 0, gradename:'' })
@@ -120,13 +131,14 @@ const CalligraphyPage = () => {
        if(response.code  === 0){
          const resData = response.course
          setCourse({
-          videoPath: typeKey === 'gSchool'? resData.charList[0].url: resData.videoPath,
-          pic: typeKey === 'gSchool'? '': resData.picPath,
-          activeChar: typeKey === 'gSchool'? resData.charList[0].character: '',
+          videoPath: resData.charList.length>0 ? resData.charList[0].url: resData.videoPath,
+          pic: typeKey === 'gSchool'? '':resData.charList.length> 0? resData.charList[0].imgurl: resData.picPath,
+          activeChar: resData.charList.length>0 ? resData.charList[0].character :'',
           phraseList: typeKey === 'gSchool'? resData.charList[0].phraseList: [],
           pronunciation: typeKey === 'gSchool'? resData.charList[0].pronunciation:'',
           startposition: typeKey === 'gSchool'? resData.charList[0].startposition:'',
-          structure:typeKey === 'gSchool'? resData.charList[0].structure:''
+          structure:typeKey === 'gSchool'? resData.charList[0].structure:'',
+          type: resData.charList.length>0 ? resData.charList[0].type : null
          })
        }
       }
@@ -187,24 +199,25 @@ const CalligraphyPage = () => {
   const clickCharacter = (item: object) =>{
     setCourse({
       videoPath: item.url ,
-      pic: '',
+      pic: item.imgurl,
       activeChar: item.character,
       phraseList: item.phraseList,
       pronunciation: item.pronunciation,
       startposition: item.startposition,
-      structure:item.structure
+      structure:item.structure,
+      type: item.type
     })
   }
   const courseClickVal = (item: object, index: Number) =>{
-    if(index <= 2){
+    // if(index <= 2){
       setC_ClickVal({
         courseno: item.courseno,
         coursename:item.coursename
       })
       runCourseDetail({courseno:item.courseno})
-    } else {
-      message.info("请购买该课程")
-    }
+    // } else {
+    //   message.info("请购买该课程")
+    // }
   }
 
   useEffect(() => {
@@ -249,6 +262,7 @@ const CalligraphyPage = () => {
               <div className={styles.c_item1}>
                 {courseDetail.videoPath?
                   <Player
+                    autoPlay='true'
                     poster={gradeSchool}
                     src={courseDetail.videoPath}>
                     <BigPlayButton position="center" />
@@ -302,24 +316,24 @@ const CalligraphyPage = () => {
                 </div>
               </div>
             </div>
-            { typeKey === 'gSchool'?
+            { couseKey === '2'?
               <div className={styles.words}>
                 {courseData?.course?.charList.map((item)=>{
                   return (
                     <div key={item.id} className={classnames(item.character === courseDetail.activeChar? styles.active: '', styles.w_item)}
-                    onClick= {()=>clickCharacter(item)}>
-                    {item.character}
+                      onClick= {()=>clickCharacter(item)}>
+                      {item.type === 1 ? item.startposition: item.character}
                     </div>
                   )
                 })}
               </div>
-            : ''}
+            : ''} 
             {courseDetail.pic ?
               <div className={styles.font_img}>
                 <img src={courseDetail.pic}/>
               </div>: ''
             }
-            {typeKey === 'gSchool' && courseDetail.startposition ?
+            { !courseDetail.type && courseDetail.startposition ?
               <div className={styles.font_structure}>
                 <div className={styles.s_item}>
                   <div className={styles.font_btn}>

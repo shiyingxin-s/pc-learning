@@ -7,6 +7,7 @@ import style from "./index.scss"
 import menuList from "@/config/footerMenu"
 import API from "@/api"
 import {useRequest} from "ahooks"
+import imgPic from "../assets/img_pic.jpg"
 
 
 interface IData {
@@ -57,6 +58,17 @@ const Footer = () => {
             </div>)
           })
         }
+      </div>
+      <div style={{textAlign:'center',borderTop: '1px solid #ffffff', padding:'10px 0'}}>
+        <div className={classnames("container")} >
+          <a target="_blank" href="http://beian.miit.gov.cn" style={{display:'inline-block',textDecoration:'none',height:'20px',lineHeight:'20px'}}>
+              <p style={{float:'left',height:'20px',lineHeight:'20px', color:'#ffffff'}}>粤ICP备20001822号-1  </p>
+          </a>
+          {/* <a target="_blank" href="http://beian.miit.gov.cn" style={{display:'inline-block',textDecoration:'none',height:'20px',lineHeight:'20px'}}>
+              <img src={imgPic} style={{float:'left', marginLeft: '15px'}} />
+              <p style={{float:'left',height:'20px',lineHeight:'20px', color:'#ffffff', marginLeft: '5px'}}> 陕公网安备 61019002001422号</p>
+          </a> */}
+        </div>
       </div>
     </footer>
   )
