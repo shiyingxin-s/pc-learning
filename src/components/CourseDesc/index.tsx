@@ -30,7 +30,7 @@ const courseModalBox:FC<IModal> = (props) => {
         onCancel={() => onClose(false)}
         modalRender={(modal) => <Draggable disabled={disabled}>{modal}</Draggable>}
         footer={null}>
-          <div className={styles.modalTitle}>{type === '1'?'成人版通用教学简介':'小学同步教学简介'}</div>
+          <div className={styles.modalTitle}>{type === '1'?'楷书基础教学简介':'一至六年级生字同步教学简介'}</div>
           <div className={classnames("html_con") } style={{color:'#666666',lineHeight:'36px'}} dangerouslySetInnerHTML = {{__html:context}}></div>
       </Modal>
     </div>

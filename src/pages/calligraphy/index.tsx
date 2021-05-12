@@ -232,7 +232,7 @@ const CalligraphyPage = () => {
               <img src={gradeSchool}/>
           </div>
           <div className={styles.title}>
-            <span>小学同步教学</span>
+            <span>一至六年级生字同步教学</span>
             <span onClick= {(e)=>courseInfoClick(e,'0')}>介绍>></span>
           </div>
         </div>
@@ -241,7 +241,7 @@ const CalligraphyPage = () => {
               <img src={general}/>
           </div>
           <div className={styles.title}>
-            <span>成人版通用教学</span>
+            <span>楷书基础教学</span>
             <span onClick= {(e)=>courseInfoClick(e,'1')}>介绍>></span>
           </div>
         </div>
@@ -250,13 +250,13 @@ const CalligraphyPage = () => {
         <div className={classnames(styles.con_top)}>
           <div className={classnames("container",styles.title_con)}>
             <div className={classnames(styles.arrow, typeKey === 'gSchool'? styles.left :styles.right)}></div>
-            当前位置：写字教学>{typeKey === 'gSchool'? '小学同步教学':'成人版通用教学'}
+            当前位置：写字教学>{typeKey === 'gSchool'? '一至六年级生字同步教学':'楷书基础教学'}
           </div>
         </div>
         <div className={classnames(styles.con_section)}>
           <div className={classnames("container")}>
             <div className={styles.ctitle}>
-             {typeKey === 'gSchool'? '小学同步教学':'成人版通用教学'}  {clickVal.text} {c_clickVal.text}
+             {typeKey === 'gSchool'? '一至六年级生字同步教学':'楷书基础教学'}  {clickVal.text} {c_clickVal.text}
             </div>
             <div className={styles.course_top}>
               <div className={styles.c_item1}>
@@ -272,7 +272,7 @@ const CalligraphyPage = () => {
               <div className={styles.c_item2}>
                 <div className={styles.c_top}>
                   <Avatar src={typeKey === 'gSchool'? g_avatar: p_avatar} />
-                  <span className={styles.c_title}>{typeKey === 'gSchool'? '小学同步教学':'成人版通用教学'}</span>
+                  <span className={styles.c_title}>{typeKey === 'gSchool'? '一至六年级生字同步教学':'楷书基础教学'}</span>
                 </div>
                 <div className={classnames("calligraphy_c_tabs")} >
                   <Tabs activeKey={couseKey} centered  onChange={onchange}>
